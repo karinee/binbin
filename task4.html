@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        li{
+            display: inline-block;
+            float: left;
+            width: 30px;
+            height:30px;
+            margin-right:10px;
+            list-style: none;
+            background-color: #ff69b4;
+            text-align: center;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+<!--
+模拟一个队列，队列的每个元素是一个数字，初始队列为空
+有一个input输入框，以及4个操作按钮
+		○ 点击"左侧入"，将input中输入的数字从左侧插入队列中；
+		○ 点击"右侧入"，将input中输入的数字从右侧插入队列中；
+		○ 点击"左侧出"，读取并删除队列左侧第一个元素，并弹窗显示元素中数值；
+		○ 点击"右侧出"，读取并删除队列又侧第一个元素，并弹窗显示元素中数值；
+点击队列中任何一个元素，则该元素会被从队列中删除
+-->
+<input id="input-num" type="text"/>
+<button id="left-in">左侧入</button>
+<button id="right-in">右侧入</button>
+<button id="left-out">左侧出</button>
+<button id="right-out">右侧出</button>
+<ul id="num-queue"></ul>
+</body>
+<script type="text/javascript">
+    var linBtn = document.getElementById("left-in");
+    var rinBtn = document.getElementById("right-in");
+    var loutBtn = document.getElementById("left-out");
+    var routBtn = document.getElementById("right-out");
+    var numInput = document.getElementById("input-num");
+    var numQueue = document.getElementById("num-queue");
+
+    function insert(direction) {
+        if(numInput.value == ""){
+            alert("请输入数字");
+            numInput.focus();
+        }
+        else if(isNaN(numInput.value)){
+            alert("输入格式错误，请重新输入数字!");
+            numInput.value= "";
+            numInput.focus();
+        }
+        else{
+            var subli = document.createElement("li");
+            subli.innerHTML = numInput.value;
+            //从左侧添加
+            if(direction === "left"){
+                if(numQueue.children.length == 0){
+                    numQueue.appendChild(subli);
+                }
+                else{
+                    numQueue.insertBefore(subli,numQueue.firstChild);
+                }
+                numInput.value ="";
+            }
+            //从右侧添加
+            else if(direction === "right"){
+                numQueue.appendChild(subli);
+                numInput.value ="";
+            }
+        }
+    }
+
+    function delNode(node,direction){
+        //从左侧删除
+        if(direction === "left"){
+            alert("删除"+ (numQueue.removeChild(numQueue.firstChild)).innerText);
+        }
+        //从右侧删除
+        else if(direction ==="right"){
+            alert("删除"+ (numQueue.removeChild(numQueue.lastChild)).innerText);
+        }
+        //点击队列的元素，该元素被删除
+        else{
+            alert("删除"+(numQueue.removeChild(node)).innerText);
+        }
+    }
+
+    linBtn.onclick = function(){insert("left");};
+    rinBtn.onclick = function(){insert("right");};
+    loutBtn.onclick = function(){delNode(0,"left");};
+    routBtn.onclick = function(){delNode(0,"right");};
+    numQueue.onclick = function(){delNode(event.target);};
+</script>
+</html>
