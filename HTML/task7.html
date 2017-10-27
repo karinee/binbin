@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>遍历树的结点</title>
+    <style>
+        body{
+            text-align: center;
+        }
+        #tree{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            /*border: 2px solid #8a2be2;*/
+            margin: 80px auto;
+            margin-bottom: 0px;
+            width: 800px;
+            height:350px;
+
+        }
+        .layer_0{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            border: 2px solid #8a2be2;
+            width: 700px;
+            height: 300px;
+        }
+        .layer_1{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            border: 2px solid #8a2be2;
+            width: 300px;
+            height:200px;
+        }
+        .layer_2{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            border: 2px solid #8a2be2;
+            width: 120px;
+            height:80px;
+        }
+        .layer_3{
+            display: flex;
+            flex-direction: row;
+            border: 2px solid #8a2be2;
+            width: 50px;
+            height: 30px;
+        }
+        #orderway{
+            margin: 0px auto;
+        }
+        button{
+            background-color: #87cefa;
+            width:80px;
+            height:30px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<section id="tree">
+    <div class="layer_0" id="root">
+        <div class = "layer_1">
+            <div class = "layer_2">
+                <div class = "layer_3"></div>
+                <div class = "layer_3"></div>
+            </div>
+            <div class = "layer_2">
+                <div class = "layer_3"></div>
+                <div class = "layer_3"></div>
+            </div>
+        </div>
+        <div class = "layer_1">
+            <div class = "layer_2">
+                <div class = "layer_3"></div>
+                <div class = "layer_3"></div>
+            </div>
+            <div class = "layer_2">
+                <div class = "layer_3"></div>
+                <div class = "layer_3"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<span id="orderway">
+    <button id="preorder">前序</button>
+    <button id="inorder">中序</button>
+    <button id="postorder">后序</button>
+</span>
+</body>
+<script>
+    var root= document.getElementById("root");
+    var preOrderBtn = document.getElementById("preorder");
+    var inOrderBtn = document.getElementById("inorder");
+    var postOrderBtn = document.getElementById("postorder");
+    var orderArray = [];
+    var timer = null;
+
+    function preOrder(node){
+        if(node!=null){
+            orderArray.push(node);
+            if(node.firstElementChild != null){preOrder(node.firstElementChild);}
+            if(node.lastElementChild != null){preOrder(node.lastElementChild);}
+        }
+    }
+
+    function inOrder(node){
+        if(node !=null){
+            if(node.firstElementChild != null){inOrder(node.firstElementChild);}
+            orderArray.push(node);
+            if(node.lastElementChild != null){inOrder(node.lastElementChild);}
+        }
+    }
+
+    function postOrder(node){
+        if(node!=null){
+            if(node.firstElementChild != null){postOrder(node.firstElementChild);}
+            if(node.lastElementChild != null){postOrder(node.lastElementChild);}
+            orderArray.push(node);
+        }
+    }
+    //在执行当前遍历时可以取消上一遍历，使得不会出现多重遍历的情况
+    function reset() {
+        orderArray = [];
+        clearInterval(timer);
+        var divList = document.getElementsByTagName("div");
+        for(var i = 0,len = divList.length;i<len;i++){
+            divList[i].style.backgroundColor = "#fff";
+        }
+    }
+
+    function changeColor(){
+            //第一个框先变颜色
+            var i = 0;
+            orderArray[i].style.backgroundColor = "#0000ff";
+
+            timer = setInterval(function(){
+                i++;
+                if(i<orderArray.length){
+                    orderArray[i].style.backgroundColor = "#0000ff";
+                    orderArray[i-1].style.backgroundColor = "#fff"; //不会导致颜色覆盖
+                }else{
+                    //遍历完后，清除定时器，重置最后一个框颜色
+                    clearInterval(timer);
+                    orderArray[orderArray.length-1].style.backgroundColor = "#fff";
+                }
+            },1500);
+    }
+
+    preOrderBtn.onclick = function(){
+        reset();
+        preOrder(root);
+        changeColor();
+    };
+    inOrderBtn.onclick = function(){
+        reset();
+        inOrder(root);
+        changeColor();
+    };
+    postOrderBtn.onclick = function(){
+        reset();
+        postOrder(root);
+        changeColor();
+    };
+
+</script>
+</html>

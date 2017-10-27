@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>任务六</title>
+</head>
+<style>
+    li{
+        float:left;
+        background-color: #7fffd4;
+        color:#000000;
+        height: 30px;
+        font-size: 18px;
+        text-align: center;
+        margin: 5px 10px;
+        list-style: none;
+        cursor: pointer;
+    }
+</style>
+<body>
+<textarea id ="write"rows="10" cols="80" placeholder="允许一次批量输入多个内容，格式可以为数字、中文、英文等，可以通过用回车，逗号（全角半角均可），顿号，空格（全角半角、Tab等均可）等符号作为不同内容的间隔"></textarea>
+<div>
+<button id="lin-btn">左侧入</button>
+<button id="rin-btn">右侧入</button>
+<button id="lout-btn">左侧出</button>
+<button id="rout-btn">右侧出</button>
+</div>
+<input id="src"size="70" placeholder="查询词" type="text"/>
+<button id="search-btn">查询</button>
+<ul id="show-box"></ul>
+</body>
+<script>
+    var text = document.getElementById("write");
+    var src= document.getElementById("src");
+    var showBox = document.getElementById("show-box");
+    var leftIn = document.getElementById("lin-btn");
+    var rightIn = document.getElementById("rin-btn");
+    var leftOut = document.getElementById("lout-btn");
+    var rightOut = document.getElementById("rout-btn");
+    var srcBtn = document.getElementById("search-btn");
+    var liWord;
+
+    //按符号分割输入的内容，返回包含多个单词的数组
+    function splitText(textString){
+        var words = textString.split(/[,.\\?;:\s\r\n，。？；：、|]/);
+        return words;
+    }
+    //添加li
+    function insert(direction,words){
+        var i,
+            len = words.length;
+        //向左插入
+        if(direction === "left"){
+            for(i=0;i<len;i++){
+                var liBar = document.createElement("li");
+                liBar.innerHTML = words[i];
+                showBox.insertBefore(liBar,showBox.firstChild);
+                text.value= "";
+            }
+        }
+        //向右插入
+        else if(direction === "right"){
+            for(i=0;i<len;i++){
+                var liBar = document.createElement("li");
+                liBar.innerHTML = words[i];
+                showBox.appendChild(liBar);
+                text.value = "";
+            }
+        }
+    }
+
+    //删除li
+    function delNode(node,direction){
+        if(direction === "left"){
+            showBox.removeChild(showBox.firstChild);
+        }
+        else if(direction === "right"){
+            showBox.removeChild(showBox.lastChild);
+        }
+        else{
+            showBox.removeChild(node);
+        }
+    }
+    //匹配搜索词
+    function regExp(word) {
+        //当正则表达式有变量时用RegExp构造函数而不是字面量
+        var reg = new RegExp("\w*" + word + "\w*", "gim"),
+            i,
+            lis = document.getElementsByTagName("li"),
+            len = lis.length;
+        for (i = 0; i < len; i++) {
+            var li = lis[i];
+            //每次先恢复默认状态
+            li.style.backgroundColor = "#7fffd4";
+            li.style.color = "#000000";
+            //匹配
+            var result = reg.exec(li.innerHTML);
+            reg.lastIndex = 0; //使用exec方法，在完成了一次模式匹配之后要开始检索新的字符串，就必须手动地把 lastIndex 属性重置为 0
+            if (result != null) {
+                li.style.backgroundColor = "#ff0000";
+                li.style.color = "#ffffff";
+            }
+        }
+        src.value= "";
+    }
+    leftIn.onclick = function () {
+        liWord  = splitText(text.value);
+        insert("left",liWord);
+    };
+    rightIn.onclick = function () {
+        liWord  = splitText(text.value);
+        insert("right",liWord);
+    };
+    leftOut.onclick = function () {
+        delNode(0,"left");
+    };
+    rightOut.onclick = function () {
+        delNode(0,"right");
+    };
+    showBox.onclick = function () {
+        delNode(event.srcElement?event.srcElement:event.target);
+    }
+    srcBtn.onclick = function () {
+        regExp(src.value);
+    };
+
+</script>
+</html>
